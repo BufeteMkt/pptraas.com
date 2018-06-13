@@ -151,6 +151,15 @@ app.get('/screenshot', async (request, response) => {
       };
     }
 
+    if(request.query.remove_selector){
+      const buttonSelector = request.query.remove_selector;
+      await page.evaluate(cssSelector => {
+        document.querySelectorAll(cssSelector).forEach(node => {
+          node.remove();
+        });
+      }, buttonSelector);
+    }
+
     const buffer = await page.screenshot(opts);
     response.type('image/png').send(buffer);
   } catch (err) {
