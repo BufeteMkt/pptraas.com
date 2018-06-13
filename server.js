@@ -150,14 +150,16 @@ app.get('/screenshot', async (request, response) => {
         height: viewport.height
       };
     }
-
-    if(request.query.remove_selector){
-      const buttonSelector = request.query.remove_selector;
-      await page.evaluate(cssSelector => {
-        document.querySelectorAll(cssSelector).forEach(node => {
-          node.remove();
+    console.log(request.query.remove_selectors)
+    if(request.query.remove_selectors){
+      const remove_selectors_parsed = JSON.parse(request.query.remove_selectors);
+      await page.evaluate(cssSelectors => {
+        cssSelectors.forEach(cssSelector => {
+          document.querySelectorAll(cssSelector).forEach(node => {
+            node.remove();
+          });
         });
-      }, buttonSelector);
+      }, remove_selectors_parsed);
     }
 
     const buffer = await page.screenshot(opts);
