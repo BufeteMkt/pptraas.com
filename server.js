@@ -150,16 +150,29 @@ app.get('/screenshot', async (request, response) => {
         height: viewport.height
       };
     }
-    console.log(request.query.remove_selectors)
+
+    // If it is requested to wait until the html node is visible
+    if(request.query.wait_for_html_visible){
+      // Wait until the html node is visible and not transparent
+      await page.waitForFunction(() => {
+        const nodeStyle = window.getComputedStyle(document.body.parentNode);
+        return nodeStyle && nodeStyle.display !== 'none' && nodeStyle.visibility !== 'hidden' && nodeStyle.opacity == '1';
+      });
+      //await page.waitForFunction('window.getComputedStyle(document.body.parentNode, null).getPropertyValue("opacity") === "1"');
+    }
+
+    // If it is requested to remove some selectors,
+    // will wait until the page is loaded and remove
+    // each one of the selectors
     if(request.query.remove_selectors){
-      const remove_selectors_parsed = JSON.parse(request.query.remove_selectors);
+      const parsedSelectorsToRemove = JSON.parse(request.query.remove_selectors);
       await page.evaluate(cssSelectors => {
         cssSelectors.forEach(cssSelector => {
           document.querySelectorAll(cssSelector).forEach(node => {
             node.remove();
           });
         });
-      }, remove_selectors_parsed);
+      }, parsedSelectorsToRemove);
     }
 
     const buffer = await page.screenshot(opts);
