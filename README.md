@@ -23,6 +23,20 @@ supported by the [Google Search bot](https://developers.google.com/search/docs/g
 
 https://pptraas.com/gsearch?url=https://paul.kinlan.me/
 
+### Render options
+
+#### Wait for html to be visible
+https://pptraas.com/screenshot?wait_for_html_visible=1&url=https://paul.kinlan.me/
+
+
+#### Remove DOM elements
+
+Remove DOM elements that match some CSS selectors:
+
+https://pptraas.com/screenshot?url=https://paul.kinlan.me/&remove_selectors=\[".ad", ".banner"\]
+
+Note this removal is performed after the wait for the **wait_for_selectors** phase.
+
 ## Performance
 
 ### Get a timeline trace
