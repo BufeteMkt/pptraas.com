@@ -111,9 +111,9 @@ app.get('/screenshot', async (request, response) => {
 
   // Default to a reasonably large viewport for full page screenshots.
   const viewport = {
-    width: 1280,
+    width: request.query.width ? parseInt(request.query.width) : 1280,
     height: 1024,
-    deviceScaleFactor: 2
+    deviceScaleFactor: request.query.deviceScaleFactor ? parseInt(request.query.deviceScaleFactor) : 2
   };
 
   let fullPage = true;
@@ -131,7 +131,6 @@ app.get('/screenshot', async (request, response) => {
   }
 
   const browser = response.locals.browser;
-
   try {
     const page = await browser.newPage();
     await page.setViewport(viewport);
