@@ -113,7 +113,7 @@ app.get('/screenshot', async (request, response) => {
   const viewport = {
     width: request.query.width ? parseInt(request.query.width) : 1280,
     height: 1024,
-    deviceScaleFactor: request.query.deviceScaleFactor ? parseInt(request.query.deviceScaleFactor) : 2
+    deviceScaleFactor: request.query.device_scale_factor ? parseInt(request.query.device_scale_factor) : 2
   };
 
   let fullPage = true;
