@@ -285,6 +285,34 @@ app.get('/version', async (request, response) => {
   response.send(ua);
 });
 
+app.get('/html', async (request, response) => {
+  const url = request.query.url;
+  if (!url) {
+    return response.status(400).send(
+      'Please provide a URL. Example: ?url=https://example.com');
+  }	
+  const browser = response.locals.browser;
+  const page = await browser.newPage();
+  
+  // If it is requested to wait until the html node is visible
+  if(request.query.wait_for_html_visible){
+	  // Wait until the html node is visible and not transparent
+	  await page.waitForFunction(() => {
+		const nodeStyle = window.getComputedStyle(document.body.parentNode);
+		return nodeStyle && nodeStyle.display !== 'none' && nodeStyle.visibility !== 'hidden' && nodeStyle.opacity == '1';
+	  });
+  }
+  
+  await page.goto(url, {waitUntil: 'networkidle0'});
+  if(request.query.delay){
+    await delay(request.query.delay);
+  }
+  const html = await page.evaluate(() => document.body.parentNode.innerHTML);
+  await browser.close();
+
+  response.type('text/html').send(html);
+});
+
 app.get('/gsearch', async (request, response) => {
   const url = request.query.url;
   if (!url) {
